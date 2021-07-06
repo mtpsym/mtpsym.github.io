@@ -1,0 +1,3 @@
+baseURL = "https://mtpsym.github.io/"
+title = "MTP-SYM"
+theme = "beautifulhugo"
