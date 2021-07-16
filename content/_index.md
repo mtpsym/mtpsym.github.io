@@ -77,3 +77,23 @@ Telegram uses the little-known Infinite Garble Extension (IGE) block cipher mode
 ## What about length extension attacks?
 
 MTProto makes heavy use of plain SHA-256, both in deriving keys and calculating the MAC, which on first look appears as the kind of use that would lead to [length extension attacks](https://en.wikipedia.org/wiki/Length_extension_attack). However, as our proofs show, MTProto manages to sidestep this particular issue because of its plaintext encoding format which mandates the presence of certain metadata in the first block.
+
+## Did we really break IND-CPA?
+
+Above, we wrote:  
+> An attacker can detect which of two special messages was encrypted by a client or a server under some special conditions. In particular, Telegram encrypts acknowledgement messages, i.e. messages that encode that a previous message was indeed received, but the way it handles the re-sending of unacknowledged messages leaks whether such an acknowledgement was sent and received. This attack is mostly of theoretical interest. However, cryptographic protocols are expected to rule out even such attacks. Telegram confirmed the behaviour we observed and addressed this issue in version 7.8.1 for Android, 7.8.3 for iOS and 2.8.8 for Telegram Desktop.
+
+Telegram [wrote](https://web.archive.org/web/20210716150303/https://core.telegram.org/techfaq/UoL-ETH-4a-proof#2-implications-for-ind-cpa-security-sections-iv-b2-iv-c7):  
+> MTProto never produces the same ciphertext, even for messages with identical content, because MTProto is stateful and msg_id is changed on every encryption. If one message is re-sent on the order of 2^64 times, MTProto can transmit the same ciphertext for the same message on two of these re-sendings. However, it would not be correct to claim that retransmission over the network of the same ciphertext for a message that was previously sent is a violation of IND-CPA security because otherwise any protocol over TCP wouldn't be IND-CPA secure due to TCP retransmissions.
+> 
+> To facilitate future research, each message that is re-sent by Telegram apps is now either wrapped in a new container or re-sent with a new msg_id.
+
+We have already addressed this in the latest version of our write-up (which we shared with the Telegram developers on 15 July 2021). We reproduce that part below, slightly edited for readability.
+
+> If a message is not acknowledged within a certain time in MTProto, it is re-encrypted using the same `msg_id` and with fresh random padding. While this appears to be a useful feature and a mitigation against message deletion, it enables attacks in the IND-CPA setting, as we explain next.
+
+> As a motivation, consider a local passive adversary that tries to establish whether `R` responded to `I` when looking at a transcript of three ciphertexts (`c_{I, 0}`, `c_{R}`, `c_{I, 1}`), where `c_{u}` represents a ciphertext sent from `u`. In particular, it aims to establish whether `c_{R}` encrypts an automatically generated acknowledgement, we will use “`\ACK`” below to denote this, or a new message from `R`. If `c_{I, 1}` is a re-encryption of the same message as `c_{I, 0}`, re-using the state, this leaks that bit of information about `c_{R}`.
+
+> Note that here we are breaking the confidentiality of the ciphertext carrying “`ACK`”. In addition to these encrypted acknowledgement messages, the underlying transport layer, e.g. TCP, may also issue unencrypted ACK messages or may resend ciphertexts as is. The difference between these two cases is that in the former case the acknowledgement message is encrypted, in the latter it is not. For completeness, note that Telegram clients do not resend cached ciphertext blobs when unacknowledged, but re-encrypt the underlying message under the same state but with fresh random padding.
+
+These pararagraphs are then followed by a semi-formal write-up of the attack.
