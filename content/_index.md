@@ -1,5 +1,5 @@
 ---
-title: Security Analysis of Telegram's MTProto Protocol (Symmetric Part)
+title: Security Analysis of Telegram (Symmetric Part)
 draft: false
 ---
 
