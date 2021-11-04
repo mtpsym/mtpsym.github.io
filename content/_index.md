@@ -29,7 +29,7 @@ We were informed by the Telegram developers that they do not do security or bugf
 
 # Formal Security Analysis
 
-The central result of our investigation, however, is that Telegram's MTProto *can* provide a confidential and integrity-protected channel when the changes we suggested are adopted by the Telegram developers. As mentioned above, the Telegram developers communicated to us that they did adopt these changes. Telegram awarded a cash price for this analysis to stimulate future analysis.
+The central result of our investigation, however, is that Telegram's MTProto *can* provide a confidential and integrity-protected channel when the changes we suggested are adopted by the Telegram developers. As mentioned above, the Telegram developers communicated to us that they did adopt these changes. Telegram awarded a cash prize for this analysis to stimulate future analysis.
 
 However, this result comes with significant caveats. Cryptographic protocols like MTProto are built from cryptographic building blocks such as hash functions, block ciphers and public-key encryption. In a formal security analysis, the security of the protocol is reduced to the security of its building blocks. This is no different to arguing that a car is road safe if its tires, brakes and indicator lights are fully functional. In the case of Telegram, the security requirements on the building blocks are unusual. Because of this, these requirements have not been studied in previous research. This is somewhat analogous to making assumptions about a car's brakes that have not been lab-tested. Other cryptographic protocols such as TLS do not have to rely on these sort of special assumptions.
 
