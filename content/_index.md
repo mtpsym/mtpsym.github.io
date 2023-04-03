@@ -37,7 +37,7 @@ A further caveat of these findings is that we only studied three official Telegr
 
 # Paper
 
-Martin R. Albrecht, Lenka Mareková, Kenneth G. Paterson, Igors Stepanovs: [*Four Attacks and a Proof for Telegram*](/paper.pdf). To appear at [IEEE Symposium on Security and Privacy 2022](https://www.ieee-security.org/TC/SP2022/).
+Martin R. Albrecht, Lenka Mareková, Kenneth G. Paterson, Igors Stepanovs: [*Four Attacks and a Proof for Telegram*](https://eprint.iacr.org/2023/469.pdf). To appear at [IEEE Symposium on Security and Privacy 2022](https://www.ieee-security.org/TC/SP2022/).
 
 # Team
 
